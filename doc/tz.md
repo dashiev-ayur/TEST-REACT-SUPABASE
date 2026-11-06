@@ -62,3 +62,10 @@
 
 ## Список решений и допущений
 - SASS вместо CSS
+- Supabase установлена глобально
+- @tanstack/react-query - Сессия + профиль
+- @tanstack/react-store - objects (список, CRUD)
+- @tanstack/react-form - формы
+- @mui/material @emotion/react @emotion/styled - UI компоненты
+- zod - валидация
+
