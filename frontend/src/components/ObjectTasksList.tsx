@@ -1,7 +1,5 @@
 import {
-  Button,
   Chip,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -9,10 +7,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import type { DbTask, TaskStatus } from "../hooks/useTasks";
 
 interface Props {
@@ -42,11 +37,7 @@ const STATUS_COLOR: Record<
 };
 
 const ObjectTasksList: React.FC<Props> = ({
-  list,
-  onOpen,
-  onEdit,
-  onDelete,
-  
+  list, 
 }) => {
   return (
     <TableContainer component={Paper}>
@@ -56,6 +47,7 @@ const ObjectTasksList: React.FC<Props> = ({
             <TableCell>Название</TableCell>
             <TableCell>Статус</TableCell>
             <TableCell>Создана</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -83,6 +75,9 @@ const ObjectTasksList: React.FC<Props> = ({
               </TableCell>
               <TableCell>
                 {new Date(task.created_at).toLocaleDateString("ru-RU")}
+              </TableCell>
+              <TableCell>
+                Открыть
               </TableCell>
             </TableRow>
           ))}
