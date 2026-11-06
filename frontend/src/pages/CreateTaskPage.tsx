@@ -9,10 +9,10 @@ export function CreateTaskPage() {
   const { id: objectId } = useParams({
     from: "/_auth/_manager/objects_/$id/tasks/new",
   });
-  
+
   const { data: object } = useObject(objectId);
 
-  const onBack = () => navigate({to: `/objects/${objectId}`})
+  const onBack = () => navigate({ to: `/objects/${objectId}` });
 
   return (
     <Layout>
@@ -22,12 +22,8 @@ export function CreateTaskPage() {
         </Typography>
 
         <Paper sx={{ p: 3 }}>
-          <TaskForm
-            objectId={objectId}
-            onBack={onBack}
-          />
+          <TaskForm mode="add" objectId={objectId} onBack={onBack} />
         </Paper>
-
       </Stack>
     </Layout>
   );

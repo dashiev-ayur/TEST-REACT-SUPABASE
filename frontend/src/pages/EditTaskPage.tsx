@@ -1,56 +1,52 @@
-import { Typography, Paper, Box, CircularProgress, Alert } from "@mui/material";
-import { TaskForm, type TaskFormValues } from "../components/TaskForm";
-import { useTask, useUpdateTask } from "../hooks/useTasks";
+import { Typography, Paper, CircularProgress, Alert } from "@mui/material";
+import { TaskForm } from "../components/TaskForm";
+import { useTask } from "../hooks/useTasks";
 import { useNavigate, useParams } from "@tanstack/react-router";
+import { Layout } from "../layout/Layout";
 
 export function EditTaskPage() {
-  const { id } = useParams({ from: "/_auth/tasks/$id" });
+  const { objectId, taskId } = useParams({
+    from: "/_auth/_manager/objects_/$objectId/task/$taskId/edit",
+  });
   const navigate = useNavigate();
-  const { data: task, isLoading, isError } = useTask(id);
-  const updateMutation = useUpdateTask();
+  const { data: task, isLoading, isError } = useTask(taskId);
+  const onBack = () => navigate({ to: `/objects/${objectId}/task/${taskId}` });
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Layout>
         <CircularProgress />
-      </Box>
+      </Layout>
     );
   }
-  if (isError || !task) {
-    return <Alert severity="error">Задача не найдена или недоступна</Alert>;
-  }
 
-  async function handleSubmit(values: TaskFormValues) {
-    if (!task) return;
-    await updateMutation.mutateAsync({
-      id: task.id,
-      title: values.title,
-      description: values.description || null,
-      assignee_id: values.assignee_id,
-    });
-    navigate({ to: `/tasks/${task.id}` });
+  if (isError || !task) {
+    return (
+      <Layout>
+        <Alert severity="error">Задача не найдена или недоступна</Alert>
+      </Layout>
+    );
   }
 
   return (
-    <Box>
-      <Typography variant="h5">Редактирование задачи</Typography>
+    <Layout>
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Редактирование задачи
+      </Typography>
+
       <Paper sx={{ p: 3 }}>
         <TaskForm
+          mode = 'edit'
+          taskId={taskId}
           defaultValues={{
             title: task.title,
             description: task.description ?? "",
             assignee_id: task.assignee_id,
           }}
-          onSubmit={handleSubmit}
-          isSubmitting={updateMutation.isPending}
-          errorMessage={
-            updateMutation.isError
-              ? (updateMutation.error as Error).message
-              : null
-          }
-          submitLabel="Сохранить"
+          objectId={objectId}
+          onBack={onBack}
         />
       </Paper>
-    </Box>
+    </Layout>
   );
 }

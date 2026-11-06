@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { useExecutors } from "../hooks/useProfiles";
-import { useCreateTask } from "../hooks/useTasks";
+import { useCreateTask, useUpdateTask } from "../hooks/useTasks";
 
 const taskSchema = z.object({
   title: z.string().min(1, "Укажите название"),
@@ -25,12 +25,16 @@ const taskSchema = z.object({
 export type TaskFormValues = z.infer<typeof taskSchema>;
 
 interface TaskFormProps {
+  mode: "add" | "edit";
+  taskId?: string | null;
   defaultValues?: Partial<TaskFormValues>;
   objectId: string;
   onBack: () => void;
 }
 
 export function TaskForm({
+  mode,
+  taskId = null,
   defaultValues,
   objectId,
   onBack,
@@ -48,20 +52,35 @@ export function TaskForm({
     },
   });
   const createMutation = useCreateTask();
+  const updateMutation = useUpdateTask();
 
   async function handleSubmit(values: TaskFormValues) {
     if (!objectId) return;
-    await createMutation.mutate(
-      {
-        title: values.title,
-        description: values.description || null,
-        object_id: objectId,
-        assignee_id: values.assignee_id,
-      },
-      {
-        onSuccess: () => onBack(),
-      },
-    );
+    if (mode === "add") {
+      await createMutation.mutate(
+        {
+          title: values.title,
+          description: values.description || null,
+          object_id: objectId,
+          assignee_id: values.assignee_id,
+        },
+        {
+          onSuccess: () => onBack(),
+        },
+      );
+    }
+    if (mode === "edit" && taskId !== null) {
+      await updateMutation.mutate(
+        {
+          id: taskId,
+          title: values.title,
+          description: values.description || null,
+        },
+        {
+          onSuccess: () => onBack(),
+        },
+      );
+    }
   }
 
   return (
@@ -165,12 +184,16 @@ export function TaskForm({
               <Button
                 type="submit"
                 variant="contained"
-                disabled={!canSubmit || formSubmitting || createMutation.isPending}
+                disabled={
+                  !canSubmit || formSubmitting || createMutation.isPending
+                }
                 startIcon={
-                  createMutation.isPending ? <CircularProgress size={18} /> : undefined
+                  createMutation.isPending ? (
+                    <CircularProgress size={18} />
+                  ) : undefined
                 }
               >
-                Добавить задачу
+                {mode === "add" ? "Добавить задачу" : "Сохранить задачу"}
               </Button>
             )}
           </form.Subscribe>

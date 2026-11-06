@@ -1,4 +1,4 @@
-import { Typography, Paper, Box } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 
 import { ObjectForm, type ObjectFormValues } from "../components/ObjectForm";
 import { useCreateObject } from "../hooks/useObjects";

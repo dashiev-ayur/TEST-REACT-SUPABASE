@@ -1,5 +1,4 @@
 import {
-  Box,
   Typography,
   Paper,
   Stack,
@@ -19,7 +18,9 @@ import {
   useDeleteTask,
   type TaskStatus,
 } from "../hooks/useTasks";
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { Layout } from "../layout/Layout";
+import { useObject } from "../hooks/useObjects";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   new: "Новая",
@@ -41,22 +42,34 @@ const STATUS_COLOR: Record<
 };
 
 export function TaskDetailPage() {
-  const { id } = useParams({ from: "/_auth/tasks/$id" });
+  const { objectId, taskId } = useParams({
+    from: "/_auth/objects_/$objectId/task/$taskId",
+  });
   const navigate = useNavigate();
   const isManager = useSelector(authStore, selectIsManager);
-  const { data: task, isLoading, isError } = useTask(id);
-  const { data: history } = useTaskHistory(id);
+
+  const { data: object } = useObject(objectId);
+  const { data: task, isLoading, isError } = useTask(taskId);
+  const { data: history } = useTaskHistory(taskId);
   const deleteMutation = useDeleteTask();
+
+  const toObject = () => navigate({ to: `/objects/${objectId}` });
+  const toEdit = () =>
+    navigate({ to: `/objects/${objectId}/task/${taskId}/edit` });
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Layout>
         <CircularProgress />
-      </Box>
+      </Layout>
     );
   }
   if (isError || !task) {
-    return <Alert severity="error">Задача не найдена или недоступна</Alert>;
+    return (
+      <Layout>
+        <Alert severity="error">Задача не найдена или недоступна</Alert>
+      </Layout>
+    );
   }
 
   async function handleDelete() {
@@ -70,36 +83,66 @@ export function TaskDetailPage() {
   }
 
   return (
-    <Box>
-      <Stack direction="row">
-        <Box>
-          <Typography variant="h5">{task.title}</Typography>
-          <Stack direction="row">
-            <Chip
-              size="small"
-              label={STATUS_LABEL[task.status]}
-              color={STATUS_COLOR[task.status]}
-            />
-            <Typography variant="body2" color="text.secondary">
-              Создана {new Date(task.created_at).toLocaleDateString("ru-RU")}
-            </Typography>
-          </Stack>
-        </Box>
-        <Stack direction="row" spacing={1}>
-          <Button
-            component={Link}
-            to={`/objects/${task.object_id}`}
-            variant="outlined"
-          >
+    <Layout>
+      <Stack direction="column" spacing={2}>
+        <Stack direction="row" spacing={2}>
+          <Typography variant="h5">
+            {object?.name} / {object?.address}
+          </Typography>
+          <Chip
+            size="medium"
+            label={STATUS_LABEL[task.status]}
+            color={STATUS_COLOR[task.status]}
+          />
+        </Stack>
+
+        <Typography variant="body2" color="text.secondary">
+          Создана {new Date(task.created_at).toLocaleDateString("ru-RU")}
+        </Typography>
+
+        <Paper sx={{ p: 2, mb: 2 }}>
+          <Typography variant="h6" color="text.secondary" sx={{mb:1}}>
+          {task.title}
+          </Typography>
+          <Typography sx={{ whiteSpace: "pre-wrap" }}>
+            {task.description || "—"}
+          </Typography>
+        </Paper>
+
+        {/* Здесь вы добавите кнопки смены статуса через RPC change_task_status */}
+
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6">История статусов</Typography>
+          <List dense>
+            {history?.length === 0 && (
+              <ListItem>
+                <ListItemText primary="История пуста" />
+              </ListItem>
+            )}
+            {history?.map((h) => (
+              <ListItem key={h.id} divider>
+                <ListItemText
+                  primary={`${h.from_status ? STATUS_LABEL[h.from_status] : "—"} → ${STATUS_LABEL[h.to_status]}`}
+                  secondary={
+                    <>
+                      {new Date(h.created_at).toLocaleString("ru-RU")}
+                      {h.comment && <> · {h.comment}</>}
+                    </>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+
+        <Stack direction="row" spacing={2}>
+          <Button onClick={toObject} variant="outlined">
             К объекту
           </Button>
+
           {isManager && (
             <>
-              <Button
-                component={Link}
-                to={`/tasks/${task.id}/edit`}
-                variant="outlined"
-              >
+              <Button onClick={toEdit} variant="outlined">
                 Редактировать
               </Button>
               <Button
@@ -114,41 +157,6 @@ export function TaskDetailPage() {
           )}
         </Stack>
       </Stack>
-
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Typography variant="subtitle2" color="text.secondary">
-          Описание
-        </Typography>
-        <Typography sx={{ whiteSpace: "pre-wrap" }}>
-          {task.description || "—"}
-        </Typography>
-      </Paper>
-
-      {/* Здесь вы добавите кнопки смены статуса через RPC change_task_status */}
-
-      <Paper sx={{ p: 2 }}>
-        <Typography variant="h6">История статусов</Typography>
-        <List dense>
-          {history?.length === 0 && (
-            <ListItem>
-              <ListItemText primary="История пуста" />
-            </ListItem>
-          )}
-          {history?.map((h) => (
-            <ListItem key={h.id} divider>
-              <ListItemText
-                primary={`${h.from_status ? STATUS_LABEL[h.from_status] : "—"} → ${STATUS_LABEL[h.to_status]}`}
-                secondary={
-                  <>
-                    {new Date(h.created_at).toLocaleString("ru-RU")}
-                    {h.comment && <> · {h.comment}</>}
-                  </>
-                }
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+    </Layout>
   );
 }
