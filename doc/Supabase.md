@@ -11,12 +11,16 @@ supabase migration new create_enums_and_tables
 supabase migration new create_functions
 supabase migration new create_rls_policies
 
+supabase migration new function_change_task_status
+supabase migration new get_task_available_transitions
+
 supabase migration up
 # для отката создавать новую миграцию..
 # forward-only - подход
 
 # пересоздаст локальную БД с нуля и применит все миграции по порядку м seed
 supabase db reset
+
 # применить миграции
 supabase db push
 supabase db push --include-seed
@@ -36,7 +40,23 @@ supabase db push --remote
 
 # Генерация типа для экземпляра supabase<Database> для подсказок
 supabase gen types typescript --local > frontend/src/types/database.ts
+
+# === Полное пересоздание ===
+# 1. Остановить Supabase и удалить все связанные Docker volumes
+supabase stop --no-backup
+docker rm $(docker ps -a | grep supabase | awk '{print $1}')
+docker volume rm $(docker volume ls | grep supabase | awk '{print $2}')
+supabase db reset
+
+# 2. Запустить Supabase заново (создастся чистый контейнер БД)
+supabase start
+# 3. Применить миграции и seed (база уже пустая)
+supabase db reset
+
+# === Backup  ===
+supabase db dump --linked --data-only --file seed.sql
 ```
+
 
 
 ```sql

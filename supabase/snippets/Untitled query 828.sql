@@ -1,0 +1,1 @@
+SELECT u.id, p.email, p.role FROM auth.users u LEFT JOIN profiles p ON u.id = p.id
