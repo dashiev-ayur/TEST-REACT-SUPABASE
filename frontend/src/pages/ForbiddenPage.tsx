@@ -1,5 +1,5 @@
 import { Box, Typography, Button } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 export function ForbiddenPage() {
   return (
@@ -13,7 +13,7 @@ export function ForbiddenPage() {
       >
         У вас нет прав для просмотра этой страницы.
       </Typography>
-      <Button variant="contained" component={RouterLink} to="/objects">
+      <Button variant="contained" component={Link} to="/objects">
         На главную
       </Button>
     </Box>

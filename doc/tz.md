@@ -67,5 +67,6 @@
 - @tanstack/react-store - objects (список, CRUD)
 - @tanstack/react-form - формы
 - @mui/material @emotion/react @emotion/styled - UI компоненты
+- @mui/icons-material - иконки
 - zod - валидация
 

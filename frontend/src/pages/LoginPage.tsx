@@ -1,14 +1,10 @@
-import { Box, Container } from '@mui/material'
-import { LoginForm } from '../components/LoginForm'
+import { LoginForm } from "../components/LoginForm";
+import { Layout } from "../layout/Layout";
 
 export function LoginPage() {
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '100%' }}>
-          <LoginForm />
-        </Box>
-      </Box>
-    </Container>
-  )
+    <Layout>
+        <LoginForm />
+    </Layout>
+  );
 }

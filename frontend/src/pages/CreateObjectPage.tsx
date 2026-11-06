@@ -1,7 +1,9 @@
 import { Typography, Paper, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+
 import { ObjectForm, type ObjectFormValues } from "../components/ObjectForm";
 import { useCreateObject } from "../hooks/useObjects";
+import { useNavigate } from "@tanstack/react-router";
+import { Layout } from "../layout/Layout";
 
 export function CreateObjectPage() {
   const navigate = useNavigate();
@@ -12,14 +14,14 @@ export function CreateObjectPage() {
       name: values.name,
       address: values.address || null,
     });
-    navigate("/objects");
+    navigate({ to: "/objects" });
   }
 
   return (
-    <Box>
+    <Layout>
       <Typography
         variant="h5"
-        //  mb={2}
+        sx={{mb: 2}}
       >
         Новый объект
       </Typography>
@@ -35,6 +37,6 @@ export function CreateObjectPage() {
           submitLabel="Создать"
         />
       </Paper>
-    </Box>
+    </Layout>
   );
 }

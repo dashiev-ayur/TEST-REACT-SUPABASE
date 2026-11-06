@@ -1,20 +1,27 @@
-import { useForm } from '@tanstack/react-form'
-import { z } from 'zod'
-import { Box, TextField, Button, Stack, Alert, CircularProgress } from '@mui/material'
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
+import {
+  Box,
+  TextField,
+  Button,
+  Stack,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 
 const objectSchema = z.object({
-  name: z.string().min(1, 'Укажите название'),
+  name: z.string().min(1, "Укажите название"),
   address: z.string().optional(),
-})
+});
 
-export type ObjectFormValues = z.infer<typeof objectSchema>
+export type ObjectFormValues = z.infer<typeof objectSchema>;
 
 interface ObjectFormProps {
-  defaultValues?: Partial<ObjectFormValues>
-  onSubmit: (values: ObjectFormValues) => Promise<void> | void
-  isSubmitting?: boolean
-  errorMessage?: string | null
-  submitLabel?: string
+  defaultValues?: Partial<ObjectFormValues>;
+  onSubmit: (values: ObjectFormValues) => Promise<void> | void;
+  isSubmitting?: boolean;
+  errorMessage?: string | null;
+  submitLabel?: string;
 }
 
 export function ObjectForm({
@@ -22,25 +29,25 @@ export function ObjectForm({
   onSubmit,
   isSubmitting,
   errorMessage,
-  submitLabel = 'Сохранить',
+  submitLabel = "Сохранить",
 }: ObjectFormProps) {
   const form = useForm({
     defaultValues: {
-      name: defaultValues?.name ?? '',
-      address: defaultValues?.address ?? '',
+      name: defaultValues?.name ?? "",
+      address: defaultValues?.address ?? "",
     } as ObjectFormValues,
     onSubmit: async ({ value }) => {
-      await onSubmit(value)
+      await onSubmit(value);
     },
-  })
+  });
 
   return (
     <Box
       component="form"
       onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
       }}
     >
       {errorMessage && (
@@ -61,7 +68,9 @@ export function ObjectForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              error={field.state.meta.isTouched && !!field.state.meta.errors.length}
+              error={
+                field.state.meta.isTouched && !!field.state.meta.errors.length
+              }
               helperText={
                 field.state.meta.isTouched
                   ? field.state.meta.errors[0]?.message
@@ -83,7 +92,9 @@ export function ObjectForm({
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              error={field.state.meta.isTouched && !!field.state.meta.errors.length}
+              error={
+                field.state.meta.isTouched && !!field.state.meta.errors.length
+              }
               helperText={
                 field.state.meta.isTouched
                   ? field.state.meta.errors[0]?.message
@@ -102,7 +113,10 @@ export function ObjectForm({
               type="submit"
               variant="contained"
               disabled={!canSubmit || formSubmitting || isSubmitting}
-              startIcon={isSubmitting ? <CircularProgress size={18} /> : undefined}
+              startIcon={
+                isSubmitting ? <CircularProgress size={18} /> : undefined
+              }
+              sx={{ width: "200px" }}
             >
               {submitLabel}
             </Button>
@@ -110,5 +124,5 @@ export function ObjectForm({
         </form.Subscribe>
       </Stack>
     </Box>
-  )
+  );
 }

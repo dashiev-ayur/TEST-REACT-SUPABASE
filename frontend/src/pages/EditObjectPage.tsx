@@ -1,41 +1,37 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { Typography, Paper, Box, CircularProgress, Alert } from "@mui/material";
 import { ObjectForm, type ObjectFormValues } from "../components/ObjectForm";
 import { useObject, useUpdateObject } from "../hooks/useObjects";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { Layout } from "../layout/Layout";
 
 export function EditObjectPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams({ from: "/_auth/_manager/objects/edit/$id" });
   const navigate = useNavigate();
   const { data: object, isLoading, isError } = useObject(id);
   const updateMutation = useUpdateObject();
 
-  if (isLoading) {
+  if (isLoading)
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress />
       </Box>
     );
-  }
-
-  if (isError || !object) {
+  if (isError || !object)
     return <Alert severity="error">Объект не найден или недоступен</Alert>;
-  }
 
   async function handleSubmit(values: ObjectFormValues) {
+    if (!object) return;
     await updateMutation.mutateAsync({
-      id: object!.id,
+      id: object.id,
       name: values.name,
       address: values.address || null,
     });
-    navigate("/objects");
+    navigate({ to: "/objects" });
   }
 
   return (
-    <Box>
-      <Typography
-        variant="h5"
-        //  mb={2}
-      >
+    <Layout>
+      <Typography variant="h5" sx={{ pb: 2 }}>
         Редактирование объекта
       </Typography>
       <Paper sx={{ p: 3 }}>
@@ -51,6 +47,6 @@ export function EditObjectPage() {
           submitLabel="Сохранить"
         />
       </Paper>
-    </Box>
+    </Layout>
   );
 }

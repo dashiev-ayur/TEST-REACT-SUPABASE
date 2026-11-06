@@ -1,7 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { z } from "zod";
 import {
   Box,
   Button,
@@ -11,36 +8,25 @@ import {
   CircularProgress,
   Stack,
 } from "@mui/material";
-import { supabase } from "../lib/supabase";
-
-// Zod 4: используем z.email() вместо z.string().email()
-const loginSchema = z.object({
-  email: z.email("Некорректный email"),
-  password: z.string().min(6, "Минимум 6 символов"),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
+import {
+  loginFormSchema,
+  useLogin,
+  type FormLoginValues,
+} from "../hooks/useLogin";
+import { useNavigate } from "@tanstack/react-router";
+import { Route } from "../routes/login";
 
 export function LoginForm() {
+  const { redirect: redirectTo } = Route.useSearch()
   const navigate = useNavigate();
-
-  const loginMutation = useMutation({
-    mutationFn: async (values: LoginValues) => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => navigate("/objects", { replace: true }),
-  });
+  const loginMutation = useLogin();
 
   const form = useForm({
-    defaultValues: { email: "", password: "" } as LoginValues,
-    // Больше никакого validatorAdapter: zodValidator()
+    defaultValues: { email: "", password: "" } as FormLoginValues,
     onSubmit: async ({ value }) => {
-      await loginMutation.mutateAsync(value);
+      await loginMutation.mutate(value, {
+        onSuccess: () => navigate({ to: redirectTo ?? '/objects', replace: true }),
+      });
     },
   });
 
@@ -52,9 +38,9 @@ export function LoginForm() {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      sx={{ maxWidth: 420, mx: "auto", mt: 8, p: 3 }}
+      sx={{ maxWidth: 420, mx: "auto", mt: 6, p: 4, background: "#fff" }}
     >
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ pb: 2 }}>
         Вход
       </Typography>
 
@@ -67,7 +53,7 @@ export function LoginForm() {
       <Stack spacing={2}>
         <form.Field
           name="email"
-          validators={{ onChange: loginSchema.shape.email }}
+          validators={{ onChange: loginFormSchema.shape.email }}
         >
           {(field) => (
             <TextField
@@ -93,7 +79,7 @@ export function LoginForm() {
 
         <form.Field
           name="password"
-          validators={{ onChange: loginSchema.shape.password }}
+          validators={{ onChange: loginFormSchema.shape.password }}
         >
           {(field) => (
             <TextField

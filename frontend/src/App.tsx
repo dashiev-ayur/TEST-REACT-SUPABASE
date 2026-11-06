@@ -1,39 +1,23 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { ProtectedRoute } from './components/ProtectedRoute'
-import { Layout } from './components/Layout'
-import { LoginPage } from './pages/LoginPage'
-import { ObjectsPage } from './pages/ObjectsPage'
-import { CreateObjectPage } from './pages/CreateObjectPage'
-import { EditObjectPage } from './pages/EditObjectPage'
-import { ForbiddenPage } from './pages/ForbiddenPage'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from './lib/queryClient'
+import { AuthProvider } from './providers/AuthProvider'
+import { routeTree } from './routeTree.gen'
+
+const router = createRouter({ routeTree })
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/403" element={<ForbiddenPage />} />
-
-      <Route
-        element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/objects" element={<ObjectsPage />} />
-        <Route
-          path="/objects/new"
-          element={
-            <ProtectedRoute allowedRoles={['manager']}>
-              <CreateObjectPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/objects/:id/edit" element={<EditObjectPage />} />
-      </Route>
-
-      <Route path="/" element={<Navigate to="/objects" replace />} />
-      <Route path="*" element={<Navigate to="/objects" replace />} />
-    </Routes>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   )
 }

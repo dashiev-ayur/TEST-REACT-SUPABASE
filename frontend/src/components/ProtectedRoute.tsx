@@ -1,8 +1,9 @@
-import { Navigate } from 'react-router-dom'
+
 import { useSelector } from '@tanstack/react-store'
 import { authStore, selectRole } from '../stores/authStore'
 import type { ReactNode } from 'react'
 import type { UserRole } from '../stores/authStore'
+import { Navigate } from '@tanstack/react-router'
 
 interface ProtectedRouteProps {
   children: ReactNode
