@@ -20,7 +20,7 @@ interface Props {
 }
 
 const NextStatus: React.FC<Props> = ({ task }) => {
-  const { data, isLoading, isError, error } = useNextStatus(task);
+  const { data, isLoading } = useNextStatus(task);
 
   const [comment, setComment] = useState("");
   const { mutate: changeStatus } = useChangeStatus();
