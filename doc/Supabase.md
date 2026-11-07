@@ -13,6 +13,7 @@ supabase migration new create_rls_policies
 
 supabase migration new function_change_task_status
 supabase migration new get_task_available_transitions
+supabase migration new grant_table_privileges
 
 supabase migration up
 # для отката создавать новую миграцию..
@@ -61,9 +62,11 @@ supabase db dump --linked --data-only --file seed.sql
 
 supabase db diff          # покажет расхождения между миграциями и локальной БД
 supabase migration list    # все ли миграции применены
+
+# С 30.10.2026 Supabase не выдаёт автоматически права на новые таблицы в public. 
+# Все GRANT для anon/authenticated должны быть явно прописаны в миграциях. 
+# См. Grants.sql
 ```
-
-
 
 ```sql
 # пользователи
