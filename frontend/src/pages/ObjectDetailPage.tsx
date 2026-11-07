@@ -35,7 +35,7 @@ export function ObjectDetailPage() {
             <CircularProgress />
           </Box>
         )}
-        {isError ||
+        {isError && !isLoading ||
           (!object && (
             <Alert severity="error">Объект не найден или недоступен</Alert>
           ))}
