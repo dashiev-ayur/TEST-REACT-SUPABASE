@@ -9,11 +9,11 @@ export const STATUS_LABEL: Record<TaskStatus, string> = {
 };
 export const STATUS_COLOR: Record<
   TaskStatus,
-  "default" | "info" | "warning" | "success" | "error"
+  string
 > = {
-  new: "default",
-  in_progress: "info",
-  on_review: "warning",
-  accepted: "success",
-  needs_rework: "error",
+  new: "#5c5c5c",
+  in_progress: "#1bb1de",
+  on_review: "#e5f62f",
+  accepted: "#2aa063",
+  needs_rework: "#cf3737",
 };

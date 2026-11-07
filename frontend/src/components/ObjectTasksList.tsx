@@ -54,7 +54,7 @@ const ObjectTasksList: React.FC<Props> = ({
                 <Chip
                   size="small"
                   label={STATUS_LABEL[task.status]}
-                  color={STATUS_COLOR[task.status]}
+                  sx={{background: STATUS_COLOR[task.status], color: "#fff"}}
                 />
               </TableCell>
               <TableCell>

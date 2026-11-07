@@ -1,4 +1,7 @@
-export type TaskStatus = 'new' | 'in_progress' | 'on_review' | 'accepted' | 'needs_rework'
+import type { Database } from "./types/database";
+
+// export type TaskStatus = 'new' | 'in_progress' | 'on_review' | 'accepted' | 'needs_rework'
+export type TaskStatus = Database['public']['Enums']['task_status'];
 
 export interface DbTask {
   id: string

@@ -42,7 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Chip
                 label={profile.role === "manager" ? "Менеджер" : "Исполнитель"}
                 size="small"
-                color={profile.role === "manager" ? "primary" : "default"}
+                color={profile.role === "manager" ? "secondary" : "default"}
               />
               <Button color="inherit" onClick={handleLogout}>
                 Выйти

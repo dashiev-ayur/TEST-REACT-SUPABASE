@@ -207,9 +207,21 @@ export type Database = {
     Functions: {
       can_access_object: { Args: { p_object_id: string }; Returns: boolean };
       can_access_task: { Args: { p_task_id: string }; Returns: boolean };
+      can_set_task_status: {
+        Args: {
+          p_task: Omit<
+            Database["public"]["Tables"]["tasks"]["Row"],
+            Database["public"]["Tables"]["tasks"]["ComputedFields"]
+          >;
+          p_to: Database["public"]["Enums"]["task_status"];
+        };
+        Returns: boolean;
+      };
       change_task_status: {
         Args: {
           p_comment?: string;
+          p_from_status: Database["public"]["Enums"]["task_status"];
+          p_object_id: string;
           p_task_id: string;
           p_to_status: Database["public"]["Enums"]["task_status"];
         };
@@ -219,15 +231,36 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["user_role"];
       };
+      get_task_available_transitions: {
+        Args: {
+          p_from_status: Database["public"]["Enums"]["task_status"];
+          p_object_id: string;
+          p_task_id: string;
+        };
+        Returns: Json;
+      };
       is_manager: { Args: Record<PropertyKey, never>; Returns: boolean };
+      is_status_transition_allowed: {
+        Args: {
+          p_from: Database["public"]["Enums"]["task_status"];
+          p_to: Database["public"]["Enums"]["task_status"];
+        };
+        Returns: boolean;
+      };
+      is_task_transition_allowed: {
+        Args: {
+          p_task: Omit<
+            Database["public"]["Tables"]["tasks"]["Row"],
+            Database["public"]["Tables"]["tasks"]["ComputedFields"]
+          >;
+          p_to: Database["public"]["Enums"]["task_status"];
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       task_status:
-        | "new"
-        | "in_progress"
-        | "on_review"
-        | "accepted"
-        | "needs_rework";
+        "new" | "in_progress" | "on_review" | "accepted" | "needs_rework";
       user_role: "manager" | "executor";
     };
     CompositeTypes: {
@@ -247,12 +280,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -274,13 +307,12 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -299,13 +331,12 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -324,13 +355,12 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -343,11 +373,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }

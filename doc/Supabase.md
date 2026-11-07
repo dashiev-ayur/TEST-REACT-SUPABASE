@@ -39,7 +39,9 @@ supabase db pull
 supabase db push --remote
 
 # Генерация типа для экземпляра supabase<Database> для подсказок
-supabase gen types typescript --local > frontend/src/types/database.ts
+mkdir -p frontend/src/common/types
+supabase gen types typescript > frontend/src/common/types/database.ts
+npx prettier --write frontend/src/common/types/database.ts
 
 # === Полное пересоздание ===
 # 1. Остановить Supabase и удалить все связанные Docker volumes
@@ -55,6 +57,10 @@ supabase db reset
 
 # === Backup  ===
 supabase db dump --linked --data-only --file seed.sql
+
+
+supabase db diff          # покажет расхождения между миграциями и локальной БД
+supabase migration list    # все ли миграции применены
 ```
 
 

@@ -21,6 +21,8 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
 import { useObject } from "../common/hooks/useObjects";
 import { STATUS_COLOR, STATUS_LABEL } from "../common/types/status";
+import NextStatus from "../components/NextStatus";
+import { useProfile } from "../common/hooks/useProfiles";
 
 export function TaskDetailPage() {
   const { objectId, taskId } = useParams({
@@ -31,6 +33,10 @@ export function TaskDetailPage() {
 
   const { data: object } = useObject(objectId);
   const { data: task, isLoading, isError } = useTask(taskId);
+
+  const {data: manager } = useProfile(task?.author_id);
+  const {data: executor } = useProfile(task?.assignee_id);
+
   const { data: history } = useTaskHistory(taskId);
   const deleteMutation = useDeleteTask();
 
@@ -73,22 +79,27 @@ export function TaskDetailPage() {
           <Chip
             size="medium"
             label={STATUS_LABEL[task.status]}
-            color={STATUS_COLOR[task.status]}
+            sx={{ background: STATUS_COLOR[task.status], color: "#fff" }}
           />
         </Stack>
 
         <Typography variant="body2" color="text.secondary">
-          Создана {new Date(task.created_at).toLocaleDateString("ru-RU")}
+          Создана {new Date(task.created_at).toLocaleDateString("ru-RU")}<br/>
+          Менеджер: {manager?.full_name} [{manager?.email}]<br/>
+          Ответственный исполнитель: {executor?.full_name} [{executor?.email}]
         </Typography>
 
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Typography variant="h6" color="text.secondary" sx={{mb:1}}>
-          {task.title}
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            {task.title}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap" }}>
             {task.description || "—"}
           </Typography>
         </Paper>
+
+
+        <NextStatus task={task} />
 
         {/* Здесь вы добавите кнопки смены статуса через RPC change_task_status */}
 
