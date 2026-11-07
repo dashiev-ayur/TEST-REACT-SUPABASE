@@ -6,7 +6,7 @@ export const Route = createFileRoute('/_manager')({
   beforeLoad: () => {
     const state = authStore.state
     if (!selectIsManager(state)) {
-      throw redirect({ to: '/403' })
+      throw redirect({ to: '/objects' })
     }
   },
   component: () => <Outlet />,
