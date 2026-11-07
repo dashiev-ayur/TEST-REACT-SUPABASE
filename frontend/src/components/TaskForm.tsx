@@ -13,8 +13,8 @@ import {
   MenuItem,
   FormHelperText,
 } from "@mui/material";
-import { useExecutors } from "../hooks/useProfiles";
-import { useCreateTask, useUpdateTask } from "../hooks/useTasks";
+import { useExecutors } from "../common/hooks/useProfiles";
+import { useCreateTask, useUpdateTask } from "../common/hooks/useTasks";
 
 const taskSchema = z.object({
   title: z.string().min(1, "Укажите название"),

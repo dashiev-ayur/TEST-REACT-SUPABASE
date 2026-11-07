@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { authStore } from '../stores/authStore'
+import { authStore } from '../common/stores/authStore'
 import { LoginPage } from '../pages/LoginPage'
 import z from 'zod'
 

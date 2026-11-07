@@ -11,35 +11,16 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useSelector } from "@tanstack/react-store";
-import { authStore, selectIsManager } from "../stores/authStore";
+import { authStore, selectIsManager } from "../common/stores/authStore";
 import {
   useTask,
   useTaskHistory,
   useDeleteTask,
-  type TaskStatus,
-} from "../hooks/useTasks";
+} from "../common/hooks/useTasks";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
-import { useObject } from "../hooks/useObjects";
-
-const STATUS_LABEL: Record<TaskStatus, string> = {
-  new: "Новая",
-  in_progress: "В работе",
-  on_review: "На проверке",
-  accepted: "Принята",
-  needs_rework: "На доработке",
-};
-
-const STATUS_COLOR: Record<
-  TaskStatus,
-  "default" | "info" | "warning" | "success" | "error"
-> = {
-  new: "default",
-  in_progress: "info",
-  on_review: "warning",
-  accepted: "success",
-  needs_rework: "error",
-};
+import { useObject } from "../common/hooks/useObjects";
+import { STATUS_COLOR, STATUS_LABEL } from "../common/types/status";
 
 export function TaskDetailPage() {
   const { objectId, taskId } = useParams({

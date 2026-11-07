@@ -1,8 +1,8 @@
 import { Typography, Paper, Box, CircularProgress, Alert } from "@mui/material";
 import { ObjectForm, type ObjectFormValues } from "../components/ObjectForm";
-import { useObject, useUpdateObject } from "../hooks/useObjects";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
+import { useObject, useUpdateObject } from "../common/hooks/useObjects";
 
 export function EditObjectPage() {
   const { id } = useParams({ from: "/_auth/_manager/objects/edit/$id" });

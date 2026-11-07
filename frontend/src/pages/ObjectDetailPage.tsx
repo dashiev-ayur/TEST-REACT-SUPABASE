@@ -7,12 +7,13 @@ import {
   Alert,
 } from "@mui/material";
 import { useSelector } from "@tanstack/react-store";
-import { authStore, selectIsManager } from "../stores/authStore";
-import { useObject } from "../hooks/useObjects";
-import { useTasksByObject } from "../hooks/useTasks";
+import { authStore, selectIsManager } from "../common/stores/authStore";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
 import ObjectTasksList from "../components/ObjectTasksList";
+import { useObject } from "../common/hooks/useObjects";
+import { useTasksByObject } from "../common/hooks/useTasks";
+import type { DbTask } from "../common/entities";
 
 export function ObjectDetailPage() {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ export function ObjectDetailPage() {
 
   const onBack = () => navigate({ to: `/objects` });
   const onCreate = () => navigate({ to: `/objects/${objectId}/tasks/new` });
-  const onTaskOpen = (taskId: string) => //alert(`objects/${objectId}/task/${taskId}`);
-    navigate({ to: `/objects/${objectId}/task/${taskId}` });
+  const onTaskOpen = (task: DbTask) =>
+    navigate({ to: `/objects/${task.object_id}/task/${task.id}` });
 
   return (
     <Layout>

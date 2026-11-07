@@ -13,9 +13,9 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import type { DbObject } from "../hooks/useObjects";
+import type { DbObject } from "../common/hooks/useObjects";
 import { useSelector } from "@tanstack/react-store";
-import { authStore, selectIsManager } from "../stores/authStore";
+import { authStore, selectIsManager } from "../common/stores/authStore";
 
 interface Props {
   list: DbObject[];

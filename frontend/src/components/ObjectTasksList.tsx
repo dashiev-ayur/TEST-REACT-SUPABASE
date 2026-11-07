@@ -10,31 +10,14 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import type { DbTask, TaskStatus } from "../hooks/useTasks";
+
+import type { DbTask } from "../common/entities";
+import { STATUS_COLOR, STATUS_LABEL } from "../common/types/status";
 
 interface Props {
   list: DbTask[];
-  onTaskOpen: (taskId: string) => void;
+  onTaskOpen: (task:DbTask) => void;
 }
-
-const STATUS_LABEL: Record<TaskStatus, string> = {
-  new: "Новая",
-  in_progress: "В работе",
-  on_review: "На проверке",
-  accepted: "Принята",
-  needs_rework: "На доработке",
-};
-
-const STATUS_COLOR: Record<
-  TaskStatus,
-  "default" | "info" | "warning" | "success" | "error"
-> = {
-  new: "default",
-  in_progress: "info",
-  on_review: "warning",
-  accepted: "success",
-  needs_rework: "error",
-};
 
 const ObjectTasksList: React.FC<Props> = ({
   list, 
@@ -81,7 +64,7 @@ const ObjectTasksList: React.FC<Props> = ({
                 <Tooltip title="Открыть">
                   <Button
                     size="small"
-                    onClick={() => onTaskOpen(task.id)}
+                    onClick={() => onTaskOpen(task)}
                     sx={{ ml: 1 }}
                   >
                     Открыть

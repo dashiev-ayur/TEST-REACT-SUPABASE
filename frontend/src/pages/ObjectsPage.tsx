@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 
 import { useSelector } from "@tanstack/react-store";
-import { authStore, selectIsManager } from "../stores/authStore";
+import { authStore, selectIsManager } from "../common/stores/authStore";
 import {
   useObjects,
   useDeleteObject,
   type DbObject,
-} from "../hooks/useObjects";
+} from "../common/hooks/useObjects";
 import { useNavigate } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
 import ObjectsList from "../components/ObjectsList";

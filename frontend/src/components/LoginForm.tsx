@@ -12,7 +12,7 @@ import {
   loginFormSchema,
   useLogin,
   type FormLoginValues,
-} from "../hooks/useLogin";
+} from "../common/hooks/useLogin";
 import { useNavigate } from "@tanstack/react-router";
 import { Route } from "../routes/login";
 

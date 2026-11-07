@@ -1,8 +1,9 @@
 import { Typography, Paper, CircularProgress, Alert } from "@mui/material";
 import { TaskForm } from "../components/TaskForm";
-import { useTask } from "../hooks/useTasks";
+
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
+import { useTask } from "../common/hooks/useTasks";
 
 export function EditTaskPage() {
   const { objectId, taskId } = useParams({

@@ -8,10 +8,11 @@ import {
   Container,
 } from "@mui/material";
 import { useSelector } from "@tanstack/react-store";
-import { authStore } from "../stores/authStore";
-import { supabase } from "../lib/supabase";
+import { authStore } from "../common/stores/authStore";
+
 import { Link, useNavigate } from "@tanstack/react-router";
 import './globals.scss';
+import { supabase } from "../common/lib/supabase";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
 
           {profile?.role === "executor" && (
-            <Button color="inherit" component={Link} to="/my-tasks">
+            <Button color="inherit" component={Link} to="/tasks">
               Мои задачи
             </Button>
           )}

@@ -1,7 +1,7 @@
 import { Typography, Paper } from "@mui/material";
 
 import { ObjectForm, type ObjectFormValues } from "../components/ObjectForm";
-import { useCreateObject } from "../hooks/useObjects";
+import { useCreateObject } from "../common/hooks/useObjects";
 import { useNavigate } from "@tanstack/react-router";
 import { Layout } from "../layout/Layout";
 

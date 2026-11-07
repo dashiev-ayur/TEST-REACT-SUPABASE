@@ -1,8 +1,8 @@
 import { Typography, Paper, Stack } from "@mui/material";
 import { TaskForm } from "../components/TaskForm";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useObject } from "../hooks/useObjects";
 import { Layout } from "../layout/Layout";
+import { useObject } from "../common/hooks/useObjects";
 
 export function CreateTaskPage() {
   const navigate = useNavigate();
